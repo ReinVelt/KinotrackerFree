@@ -16,7 +16,7 @@ public class KinoTrackerFreeActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
+        setContentView(R.layout.activity_main);
 
         btnShowLocation = (Button) findViewById(R.id.btnShowLocation);
 
@@ -26,7 +26,7 @@ public class KinoTrackerFreeActivity extends Activity {
             @Override
             public void onClick(View arg0) {
                 // create class object
-                gps = new GPSTracker(AndroidGPSTrackingActivity.this);
+                gps = new GPSTracker(KinoTrackerFreeActivity.this);
 
                 // check if GPS enabled
                 if(gps.canGetLocation()){
