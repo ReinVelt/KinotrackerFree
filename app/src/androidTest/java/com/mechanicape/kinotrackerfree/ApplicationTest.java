@@ -1,4 +1,4 @@
-package com.mechanicape.kinotracker;
+package com.mechanicape.kinotrackerfree;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

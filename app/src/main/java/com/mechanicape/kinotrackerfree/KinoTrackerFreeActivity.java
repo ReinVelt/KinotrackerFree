@@ -1,10 +1,12 @@
-package com.mechanicape.kinotracker;
+package com.mechanicape.kinotrackerfree;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+
+import com.mechanicape.kinotrackerfree.R;
 
 public class KinoTrackerFreeActivity extends Activity {
 
@@ -16,7 +18,7 @@ public class KinoTrackerFreeActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
+        setContentView(R.layout.activity_main);
 
         btnShowLocation = (Button) findViewById(R.id.btnShowLocation);
 
@@ -26,7 +28,7 @@ public class KinoTrackerFreeActivity extends Activity {
             @Override
             public void onClick(View arg0) {
                 // create class object
-                gps = new GPSTracker(AndroidGPSTrackingActivity.this);
+                gps = new GPSTracker(KinoTrackerFreeActivity.this);
 
                 // check if GPS enabled
                 if(gps.canGetLocation()){
