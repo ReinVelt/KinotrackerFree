@@ -49,10 +49,17 @@ public class KinoTrackerFreeActivity extends Activity {
         });
     }
 
+    public String getIMEI(Context context){
+
+        TelephonyManager mngr = (TelephonyManager) context.getSystemService(context.TELEPHONY_SERVICE);
+        String imei = mngr.getDeviceId();
+        return imei;
+
+    }
+
     public send()
     {
-        TelephonyManager mngr = getSystemService(Context.Telephony_service);
-        imei= mngr.getDeviceId();
+
         // Defined URL  where to send data
         URL url = new URL("http://kinotracker.eu/post.php");
 
