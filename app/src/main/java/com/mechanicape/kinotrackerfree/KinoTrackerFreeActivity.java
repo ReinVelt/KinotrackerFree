@@ -49,4 +49,20 @@ public class KinoTrackerFreeActivity extends Activity {
         });
     }
 
+    public send()
+    {
+        TelephonyManager mngr = getSystemService(Context.Telephony_service);
+        imei= mngr.getDeviceId();
+        // Defined URL  where to send data
+        URL url = new URL("http://kinotracker.eu/post.php");
+
+        // Send POST data request
+
+        URLConnection conn = url.openConnection();
+        conn.setDoOutput(true);
+        OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
+        wr.write( data );
+        wr.flush();
+    }
+
 }
