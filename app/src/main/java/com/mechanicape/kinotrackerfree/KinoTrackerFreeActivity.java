@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.telephony.TelephonyManager;
 import android.view.View;
 import android.widget.Button;
@@ -37,6 +38,8 @@ public class KinoTrackerFreeActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
         setContentView(R.layout.activity_main);
 
         btnShowLocation = (Button) findViewById(R.id.btnShowLocation);
@@ -56,8 +59,9 @@ public class KinoTrackerFreeActivity extends Activity {
                     double longitude = gps.getLongitude();
 
                     // \n is for new line
-                    Toast.makeText(getApplicationContext(), "Your Location is - \nLat: " + latitude + "\nLong: " + longitude, Toast.LENGTH_LONG).show();
-                    postData(gps.getLocation());
+                    Toast.makeText(getApplicationContext(), "Your Location is - \nLat: " + latitude + "\nLong: " + longitude + " "+getIMEI(getApplicationContext()), Toast.LENGTH_LONG).show();
+
+
                 }else{
                     // can't get location
                     // GPS or Network is not enabled
@@ -81,25 +85,29 @@ public class KinoTrackerFreeActivity extends Activity {
 
     public void postData(Location location) {
         // Create a new HttpClient and Post Header
+        String uid = this.getIMEI(this);
         HttpClient httpclient = new DefaultHttpClient();
-        HttpPost httppost = new HttpPost("http://kinotracker.eu/post.php");
-        String uid=this.getIMEI(this);
+        HttpPost httppost = new HttpPost("http://kinotracker.eu/dbinsert.php?uid="+uid);
+
+
+
 
         try {
             // Add your data
             List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
             //nameValuePairs.add(new BasicNameValuePair("id", "12345"));
             nameValuePairs.add(new BasicNameValuePair("uid", (String) uid));
-            nameValuePairs.add(new BasicNameValuePair("latitude",Double.toString( location.getLatitude())));
-            nameValuePairs.add(new BasicNameValuePair("longitude", Double.toString( location.getLongitude())));
+            nameValuePairs.add(new BasicNameValuePair("latitude", Double.toString(location.getLatitude())));
+            nameValuePairs.add(new BasicNameValuePair("longitude", Double.toString(location.getLongitude())));
             nameValuePairs.add(new BasicNameValuePair("speed", Float.toString(location.getSpeed())));
-            nameValuePairs.add(new BasicNameValuePair("heading", Float.toString( location.getBearing())));
-            nameValuePairs.add(new BasicNameValuePair("timestamp",  Long.toString(location.getTime())));
-            nameValuePairs.add(new BasicNameValuePair("status", ""));
+            nameValuePairs.add(new BasicNameValuePair("heading", Float.toString(location.getBearing())));
+            nameValuePairs.add(new BasicNameValuePair("timestamp", Long.toString(location.getTime())));
+            nameValuePairs.add(new BasicNameValuePair("status", "1"));
             httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 
             // Execute HTTP Post Request
             HttpResponse response = httpclient.execute(httppost);
+
 
         } catch (ClientProtocolException e) {
             // TODO Auto-generated catch block
