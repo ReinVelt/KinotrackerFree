@@ -60,7 +60,7 @@ public class KinoTrackerFreeActivity extends Activity {
 
                     // \n is for new line
                     Toast.makeText(getApplicationContext(), "Your Location is - \nLat: " + latitude + "\nLong: " + longitude + " \nuid: "+getIMEI(getApplicationContext()), Toast.LENGTH_LONG).show();
-
+                    postData(gps.getLocation());
 
                 }else{
                     // can't get location
