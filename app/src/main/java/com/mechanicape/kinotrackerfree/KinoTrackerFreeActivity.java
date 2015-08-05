@@ -59,7 +59,7 @@ public class KinoTrackerFreeActivity extends Activity {
                     double longitude = gps.getLongitude();
 
                     // \n is for new line
-                    Toast.makeText(getApplicationContext(), "Your Location is - \nLat: " + latitude + "\nLong: " + longitude + " "+getIMEI(getApplicationContext()), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Your Location is - \nLat: " + latitude + "\nLong: " + longitude + " \nuid: "+getIMEI(getApplicationContext()), Toast.LENGTH_LONG).show();
 
 
                 }else{
@@ -85,18 +85,19 @@ public class KinoTrackerFreeActivity extends Activity {
 
     public void postData(Location location) {
         // Create a new HttpClient and Post Header
-        String uid = this.getIMEI(this);
+
         HttpClient httpclient = new DefaultHttpClient();
-        HttpPost httppost = new HttpPost("http://kinotracker.eu/dbinsert.php?uid="+uid);
+        HttpPost httppost = new HttpPost("http://kinotracker.eu/dbinsert.php");
 
 
 
 
         try {
+            String uid = this.getIMEI(this);
             // Add your data
             List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
             //nameValuePairs.add(new BasicNameValuePair("id", "12345"));
-            nameValuePairs.add(new BasicNameValuePair("uid", (String) uid));
+            nameValuePairs.add(new BasicNameValuePair("uid",  uid));
             nameValuePairs.add(new BasicNameValuePair("latitude", Double.toString(location.getLatitude())));
             nameValuePairs.add(new BasicNameValuePair("longitude", Double.toString(location.getLongitude())));
             nameValuePairs.add(new BasicNameValuePair("speed", Float.toString(location.getSpeed())));
