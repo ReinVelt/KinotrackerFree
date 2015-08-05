@@ -1,6 +1,8 @@
 package com.mechanicape.kinotrackerfree;
 
 import android.app.Activity;
+import android.content.Context;
+import android.location.Location;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
 import android.view.View;
@@ -55,6 +57,7 @@ public class KinoTrackerFreeActivity extends Activity {
 
                     // \n is for new line
                     Toast.makeText(getApplicationContext(), "Your Location is - \nLat: " + latitude + "\nLong: " + longitude, Toast.LENGTH_LONG).show();
+                    postData(gps.getLocation());
                 }else{
                     // can't get location
                     // GPS or Network is not enabled
@@ -79,20 +82,20 @@ public class KinoTrackerFreeActivity extends Activity {
     public void postData(Location location) {
         // Create a new HttpClient and Post Header
         HttpClient httpclient = new DefaultHttpClient();
-        HttpPost httppost = new HttpPost("http://www.yoursite.com/script.php");
+        HttpPost httppost = new HttpPost("http://kinotracker.eu/post.php");
         String uid=this.getIMEI(this);
 
         try {
             // Add your data
             List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
-            nameValuePairs.add(new BasicNameValuePair("id", "12345"));
-            nameValuePairs.add(new BasicNameValuePair("uid", "Hi"));
-            nameValuePairs.add(new BasicNameValuePair("latitude","hi:"));
-            nameValuePairs.add(new BasicNameValuePair("longitude", "Hi"));
-            nameValuePairs.add(new BasicNameValuePair("speed", "Hi"));
-            nameValuePairs.add(new BasicNameValuePair("heading", "Hi"));
-            nameValuePairs.add(new BasicNameValuePair("timestamp", "Hi"));
-            nameValuePairs.add(new BasicNameValuePair("status", "Hi"));
+            //nameValuePairs.add(new BasicNameValuePair("id", "12345"));
+            nameValuePairs.add(new BasicNameValuePair("uid", (String) uid));
+            nameValuePairs.add(new BasicNameValuePair("latitude",Double.toString( location.getLatitude())));
+            nameValuePairs.add(new BasicNameValuePair("longitude", Double.toString( location.getLongitude())));
+            nameValuePairs.add(new BasicNameValuePair("speed", Float.toString(location.getSpeed())));
+            nameValuePairs.add(new BasicNameValuePair("heading", Float.toString( location.getBearing())));
+            nameValuePairs.add(new BasicNameValuePair("timestamp",  Long.toString(location.getTime())));
+            nameValuePairs.add(new BasicNameValuePair("status", ""));
             httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 
             // Execute HTTP Post Request
