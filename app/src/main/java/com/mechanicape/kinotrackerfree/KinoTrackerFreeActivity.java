@@ -8,6 +8,7 @@ import android.os.StrictMode;
 import android.telephony.TelephonyManager;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.mechanicape.kinotrackerfree.R;
@@ -31,6 +32,7 @@ import java.util.List;
 public class KinoTrackerFreeActivity extends Activity {
 
     Button btnShowLocation;
+    EditText editEmail;
 
     // GPSTracker class
     GPSTracker gps;
@@ -43,6 +45,7 @@ public class KinoTrackerFreeActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         btnShowLocation = (Button) findViewById(R.id.btnShowLocation);
+        editEmail=(EditText) findViewById(R.id.editEmail);
 
         // show location button click event
         btnShowLocation.setOnClickListener(new View.OnClickListener() {
@@ -59,7 +62,7 @@ public class KinoTrackerFreeActivity extends Activity {
                     double longitude = gps.getLongitude();
 
                     // \n is for new line
-                    Toast.makeText(getApplicationContext(), "Your Location is - \nLat: " + latitude + "\nLong: " + longitude + " \nuid: "+getIMEI(getApplicationContext()), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Your Location is - \nLat: " + latitude + "\nLong: " + longitude + " \nuid: "+getIMEI(getApplicationContext()), Toast.LENGTH_SHORT).show();
                     postData(gps.getLocation());
 
                 }else{
@@ -80,7 +83,10 @@ public class KinoTrackerFreeActivity extends Activity {
         return imei;
 
     }
-
+    public String getEmail()
+    {
+        return editEmail.getText().toString();
+    }
 
 
     public void postData(Location location) {
@@ -97,6 +103,7 @@ public class KinoTrackerFreeActivity extends Activity {
             // Add your data
             List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
             //nameValuePairs.add(new BasicNameValuePair("id", "12345"));
+            nameValuePairs.add(new BasicNameValuePair("email",this.getEmail()));
             nameValuePairs.add(new BasicNameValuePair("uid",  uid));
             nameValuePairs.add(new BasicNameValuePair("latitude", Double.toString(location.getLatitude())));
             nameValuePairs.add(new BasicNameValuePair("longitude", Double.toString(location.getLongitude())));
