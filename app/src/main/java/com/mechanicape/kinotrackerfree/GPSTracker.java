@@ -12,11 +12,25 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.Settings;
+import android.telephony.TelephonyManager;
 import android.util.Log;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class GPSTracker extends Service implements LocationListener {
 
-    private final Context mContext;
+    private  Context mContext;
 
     // flag for GPS status
     boolean isGPSEnabled = false;
@@ -30,9 +44,11 @@ public class GPSTracker extends Service implements LocationListener {
     Location location; // location
     double latitude; // latitude
     double longitude; // longitude
+    String email;
+    String uid;
 
     // The minimum distance to change Updates in meters
-    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10; // 10 meters
+    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES =1; // 10 meters
 
     // The minimum time between updates in milliseconds
     private static final long MIN_TIME_BW_UPDATES = 1000 * 60 * 1; // 1 minute
@@ -40,7 +56,13 @@ public class GPSTracker extends Service implements LocationListener {
     // Declaring a Location Manager
     protected LocationManager locationManager;
 
-    public GPSTracker(Context context) {
+    public GPSTracker() {
+
+
+    }
+
+    public void setContext(Context context)
+    {
         this.mContext = context;
         getLocation();
     }
@@ -103,6 +125,43 @@ public class GPSTracker extends Service implements LocationListener {
         }
 
         return location;
+    }
+
+
+
+    public void postData(String emailaddress,Location location) {
+        // Create a new HttpClient and Post Header
+
+        HttpClient httpclient = new DefaultHttpClient();
+        HttpPost httppost = new HttpPost("http://kinotracker.eu/dbinsert.php");
+        email=emailaddress;
+
+
+
+        try {
+            // Add your data
+            List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
+            //nameValuePairs.add(new BasicNameValuePair("id", "12345"));
+            nameValuePairs.add(new BasicNameValuePair("email",email));
+            nameValuePairs.add(new BasicNameValuePair("uid",  ""));
+            nameValuePairs.add(new BasicNameValuePair("latitude", Double.toString(location.getLatitude())));
+            nameValuePairs.add(new BasicNameValuePair("longitude", Double.toString(location.getLongitude())));
+            nameValuePairs.add(new BasicNameValuePair("speed", Float.toString(location.getSpeed())));
+            nameValuePairs.add(new BasicNameValuePair("heading", Float.toString(location.getBearing())));
+            nameValuePairs.add(new BasicNameValuePair("timestamp", Long.toString(location.getTime())));
+            nameValuePairs.add(new BasicNameValuePair("status", "1"));
+            httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+
+            // Execute HTTP Post Request
+            HttpResponse response = httpclient.execute(httppost);
+
+
+        } catch (ClientProtocolException e) {
+            // TODO Auto-generated catch block
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+        }
+
     }
 
     /**
@@ -181,9 +240,8 @@ public class GPSTracker extends Service implements LocationListener {
 
     @Override
     public void onLocationChanged(Location location) {
-
+        this.postData(this.email,location);
     }
-
     @Override
     public void onProviderDisabled(String provider) {
     }
